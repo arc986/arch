@@ -62,6 +62,13 @@ arch-chroot /mnt
 
 ```
 
+
+Errors occured, no packages were upgraded. 
+⇒ ERROR: Failed to install packages to new root.
+```
+pacman-key --refresh-keys
+```
+
 ```
 git clone https://aur.archlinux.org/yay.git
 cd yay
