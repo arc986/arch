@@ -37,6 +37,9 @@ arch-chroot /mnt
 
 ```bash
 export HOMBREPC=""
+```
+
+```bash
 echo $HOMBREPC > /etc/hostname;echo "127.0.0.1 localhost $HOMBREPC" >> /etc/hosts;echo "::1 localhost $HOMBREPC" >> /etc/hosts
 ```
 
@@ -95,6 +98,9 @@ passwd
 
 ```bash
 export USERR=""
+```
+
+```bash
 useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner,kvm,polkitd,libvirt -s /bin/zsh $USERR
 passwd $USERR
 ```
@@ -111,6 +117,7 @@ systemctl enable gdm.service
 systemctl enable libvirtd.service
 systemctl enable ufw.service
 ```
+
 ```bash
 su $USERR
 cd /tmp;git clone https://aur.archlinux.org/yay.git;cd yay;makepkg -si;sudo pacman -Rsdnc $(pacman -Qqdt)
