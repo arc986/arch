@@ -17,14 +17,13 @@ mount -o defaults,noatime /dev/sda4 /mnt
 ```
 mkfs.vfat /dev/nvme0n1p1
 mkfs.ext2 /dev/nvme0n1p2
-mkswap /dev/nvme0n1p3
-mkfs.f2fs /dev/nvme0n1p4
+mkfs.f2fs /dev/nvme0n1p3
 ```
 
 
 
 ```
-mount -t f2fs /dev/nvme0n1p4 /mnt
+mount -t f2fs /dev/nvme0n1p3 /mnt
 ```
 
 ```
@@ -33,10 +32,6 @@ mkdir /mnt/boot;mount /dev/nvme0n1p2 /mnt/boot
 
 ```
 mkdir /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
-```
-
-```
-swapon /dev/nvme0n1p3
 ```
 
 
