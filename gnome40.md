@@ -147,6 +147,12 @@ set-default-sink echocancel1
 ```
 
 ```bash
+nvim /etc/default/grub
+GRUB_DISABLE_OS_PROBER=false
+```
+
+
+```bash
 mkinitcpio -p linux-lts;grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
