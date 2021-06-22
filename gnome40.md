@@ -145,7 +145,7 @@ set-default-sink echocancel1
 ```
 
 ```bash
-mkinitcpio -p linux-hardened;grub-mkconfig -o /boot/grub/grub.cfg
+mkinitcpio -p linux-lts;grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 ```bash
