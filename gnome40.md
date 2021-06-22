@@ -24,7 +24,7 @@ mkdir /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 
 
 ```bash
-pacstrap /mnt base base-devel grub zsh wget ntfs-3g efibootmgr htop openssh linux-hardened linux-hardened-headers linux-firmware vim amd-ucode networkmanager f2fs-tools git fuse pulseaudio pipewire-alsa pipewire-jack pipewire hunspell-es_pa sudo xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau neovim firefox firefox-i18n-es-mx xf86-input-evdev kitty gnome-control-center gdm gnome-shell gnome-power-manager gnome-menus gnome-screenshot xdg-user-dirs-gtk eog evince gvfs-google gedit gnome-tweaks gnome-color-manager virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat dmidecode podman podman-compose ufw gufw fzf nautilus gnome-keyring flatpak ttf-dejavu ttf-font-awesome eog evince yarn stylus bluez gnome-bluetooth go rust nodejs python-virtualenv xorg-xwayland systemd-swap
+pacstrap /mnt base base-devel grub zsh wget ntfs-3g efibootmgr htop openssh linux-lts linux-lts-headers linux-firmware vim amd-ucode networkmanager f2fs-tools git fuse pulseaudio pipewire-alsa pipewire-jack pipewire hunspell-es_pa sudo xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau neovim firefox firefox-i18n-es-mx xf86-input-evdev kitty gnome-control-center gdm gnome-shell gnome-power-manager gnome-menus gnome-screenshot xdg-user-dirs-gtk eog evince gvfs-google gedit gnome-tweaks gnome-color-manager virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat dmidecode podman podman-compose ufw gufw fzf nautilus gnome-keyring flatpak ttf-dejavu ttf-font-awesome eog evince yarn stylus bluez gnome-bluetooth go rust nodejs python-virtualenv xorg-xwayland systemd-swap
 ```
 
 ```bash
@@ -61,12 +61,12 @@ grub-install --efi-directory=/boot/efi --bootloader-id='Arch Linux' --target=x86
 ```
 
 ```bash
-vim /etc/mkinitcpio.conf
+nvim /etc/mkinitcpio.conf
 MODULES=(f2fs fuse amdgpu radeon)
 ```
 
 ```bash
-vim /etc/modprobe.d/amdgpu.conf
+nvim /etc/modprobe.d/amdgpu.conf
 options amdgpu si_support=1
 options amdgpu cik_support=1
 ```
@@ -78,7 +78,7 @@ options radeon cik_support=0
 ```
 
 ```bash
-vim /etc/X11/xorg.conf.d/20-amdgpu.conf
+nvim /etc/X11/xorg.conf.d/20-amdgpu.conf
 Section "Screen"
 	Identifier "Screen"
 	DefaultDepth 30
@@ -131,10 +131,17 @@ systemctl enable systemd-swap.service
 ```
 
 ```bash
-su $USERR
-cd /tmp;git clone https://aur.archlinux.org/yay.git;cd yay;makepkg -si;sudo pacman -Rsdnc $(pacman -Qqdt)
-yay -S upd72020x-fw
+su $USERR;cd /tmp;git clone https://aur.archlinux.org/yay.git;cd yay;makepkg -si;yay -S upd72020x-fw
 exit
+```
+
+```bash
+nvim /etc/pulse/default.pa
+.ifexists module-echo-cancel.so
+load-module module-echo-cancel aec_method=webrtc source_name=echocancel sink_name=echocancel1 format=s16le rate=48000 channels=2 channel_map=stereo
+set-default-source echocancel
+set-default-sink echocancel1
+.endif
 ```
 
 ```bash
