@@ -134,7 +134,10 @@ systemctl enable upower.service
 ```
 
 ```bash
-su $USERR;cd /tmp;git clone https://aur.archlinux.org/yay.git;cd yay;makepkg -si;yay -S upd72020x-fw
+su $USERR
+cd /tmp;git clone https://aur.archlinux.org/yay.git;cd yay;makepkg -si
+yay -S upd72020x-fw
+yay -S nerd-fonts-dejavu-complete
 exit
 ```
 
