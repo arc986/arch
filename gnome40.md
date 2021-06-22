@@ -130,6 +130,7 @@ systemctl enable gdm.service
 systemctl enable libvirtd.service
 systemctl enable ufw.service
 systemctl enable systemd-swap.service
+systemctl enable upower.service
 ```
 
 ```bash
