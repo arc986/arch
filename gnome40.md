@@ -72,7 +72,7 @@ options amdgpu cik_support=1
 ```
 
 ```bash
-sudo nvim /etc/modprobe.d/radeon.conf
+nvim /etc/modprobe.d/radeon.conf
 options radeon si_support=0
 options radeon cik_support=0
 ```
