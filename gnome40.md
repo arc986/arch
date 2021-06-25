@@ -26,7 +26,7 @@ mount -t f2fs /dev/nvme0n1p3 /mnt;mount /dev/nvme0n1p2 /mnt/boot;mount /dev/nvme
 ```
 
 ```bash
-pacstrap /mnt base base-devel grub zsh wget ntfs-3g efibootmgr htop openssh linux-zen linux-zen-headers linux-firmware vim amd-ucode networkmanager f2fs-tools git fuse pulseaudio pipewire-alsa pipewire-jack pipewire hunspell-es_pa sudo xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau neovim firefox firefox-i18n-es-mx xf86-input-evdev kitty gnome-control-center gdm gnome-shell gnome-power-manager gnome-menus gnome-screenshot xdg-user-dirs-gtk eog evince gvfs-google gedit gnome-tweaks gnome-color-manager virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat dmidecode podman podman-compose ufw gufw fzf nautilus gnome-keyring flatpak ttf-dejavu ttf-font-awesome eog evince yarn stylus bluez gnome-bluetooth go rust nodejs python-virtualenv xorg-xwayland systemd-swap xdg-utils
+pacstrap /mnt base base-devel grub zsh wget ntfs-3g efibootmgr htop openssh linux-zen linux-zen-headers linux-firmware vim amd-ucode networkmanager f2fs-tools git fuse pulseaudio pipewire-alsa pipewire-jack pipewire hunspell-es_pa sudo xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau neovim firefox firefox-i18n-es-mx xf86-input-evdev kitty gnome-control-center gdm gnome-shell gnome-power-manager gnome-menus gnome-screenshot xdg-user-dirs-gtk eog evince gvfs-google gedit gnome-tweaks gnome-color-manager virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat dmidecode podman podman-compose ufw gufw fzf nautilus gnome-keyring flatpak ttf-dejavu ttf-font-awesome eog evince yarn stylus bluez gnome-bluetooth go rust nodejs python-virtualenv xorg-xwayland systemd-swap xdg-utils exa
 ```
 
 ```bash
