@@ -117,7 +117,7 @@ sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 ```
 
 ```bash
-rc-update add bluetooth default
+rc-update add bluetoothd default
 rc-update add ufw default
 rc-update add connmand default
 ```
