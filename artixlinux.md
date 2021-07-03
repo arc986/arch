@@ -1,3 +1,13 @@
+```bash
+connmanctl
+> agent on
+> enable wifi
+> scan wifi
+> services
+> connect wifi_00904b963a4b_4a....b_managed_psk
+Passphrase? xxxxxxxx
+```
+
 |Disposit.|Tamaño|Tipo|
 |---|---|---|
 |/dev/nvme0n1p1|8M|Sistema EFI|
