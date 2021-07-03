@@ -114,6 +114,7 @@ rc-update add connmand default
 
 ```bash
 su $USERR
+wget -N https://raw.githubusercontent.com/arc986/zsh/main/.zsh{rc,env,_history} -P ~/
 cd /tmp;git clone https://aur.archlinux.org/yay.git;cd yay;makepkg -si
 yay -S upd72020x-fw nerd-fonts-dejavu-complete
 exit
