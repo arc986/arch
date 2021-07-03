@@ -36,7 +36,7 @@ mount -t f2fs /dev/nvme0n1p3 /mnt;mount /dev/nvme0n1p2 /mnt/boot;mount /dev/nvme
 ```
 
 ```bash
-basestrap /mnt base base-devel grub zsh wget ntfs-3g efibootmgr htop openssh linux-zen linux-zen-headers linux-firmware amd-ucode f2fs-tools fuse pipewire-pulseaudio pipewire-alsa pipewire-jack pipewire sudo xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau  xf86-input-evdev xdg-utils openrc elogind-openrc ufw-openrc bluez-openrc connman-openrc exa wpa_supplicant dhclient fzf ttf-dejavu ttf-font-awesome vi neovim hunspell-es_pa kitty firefox firefox-i18n-es-mx git yarn stylus go rust nodejs python-virtualenv
+basestrap /mnt base base-devel grub zsh wget ntfs-3g efibootmgr htop openssh linux-zen linux-zen-headers linux-firmware amd-ucode f2fs-tools fuse pipewire-pulse pipewire-alsa pipewire-jack pipewire sudo xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau  xf86-input-evdev xdg-utils openrc elogind-openrc ufw-openrc bluez-openrc connman-openrc exa wpa_supplicant dhclient fzf ttf-dejavu ttf-font-awesome vi neovim hunspell-es_pa kitty firefox firefox-i18n-es-mx git yarn stylus go rust nodejs python-virtualenv
 ```
 
 ```bash
