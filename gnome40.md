@@ -38,11 +38,15 @@ arch-chroot /mnt
 ```
 
 ```bash
-export HOMBREPC=""
+export PCNAME=""
 ```
 
 ```bash
-echo $HOMBREPC > /etc/hostname;echo "127.0.0.1 localhost $HOMBREPC" >> /etc/hosts;echo "::1 localhost $HOMBREPC" >> /etc/hosts
+echo $PCNAME > /etc/hostname;
+CAT >> hosts <<EOF
+127.0.0.1 localhost $PCNAME
+::1 localhost $PCNAME
+EOF
 ```
 
 ```bash
@@ -67,15 +71,21 @@ sed -i 's/MODULES=()/MODULES=(f2fs fuse amdgpu radeon)/' /etc/mkinitcpio.conf
 ```
 
 ```bash
-echo 'options amdgpu si_support=1' > /etc/modprobe.d/amdgpu.conf;echo 'options amdgpu cik_support=1' >> /etc/modprobe.d/amdgpu.conf
+cat > /etc/modprobe.d/amdgpu.conf <<EOF
+options amdgpu si_support=1
+options amdgpu cik_support=1
+EOF
 ```
 
 ```bash
-echo 'options radeon si_support=0' > /etc/modprobe.d/radeon.conf;echo 'options radeon cik_support=0' >> /etc/modprobe.d/radeon.conf
+cat > /etc/modprobe.d/radeon.conf <<EOF
+options radeon si_support=0
+options radeon cik_support=0
+EOF
 ```
 
 ```bash
-cat <<EOF >> /etc/X11/xorg.conf.d/20-amdgpu.conf
+cat > /etc/X11/xorg.conf.d/20-amdgpu.conf <<EOF 
 Section "Screen"
 	Identifier "Screen"
 	DefaultDepth 30
