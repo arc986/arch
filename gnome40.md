@@ -130,6 +130,11 @@ systemctl enable systemd-resolved.service;systemctl enable NetworkManager;system
 ```bash
 su $USERR
 ```
+
+```bash
+git clone https://github.com/arc986/.dotfiles;cd .dotfiles;stow -v *
+```
+
 ```bash
 cd /tmp;git clone https://aur.archlinux.org/yay.git;cd yay;makepkg -si
 ```
@@ -140,7 +145,6 @@ yay -S upd72020x-fw nerd-fonts-dejavu-complete
 ```bash
 exit
 ```
-
 
 ```bash
 echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub
