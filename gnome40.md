@@ -58,8 +58,6 @@ echo es_PA.UTF-8 UTF-8 >/etc/locale.gen;echo LANG=es_PA.UTF-8 >/etc/locale.conf;
 ```
 
 ```bash
-echo KEYMAP=us > /etc/vconsole.conf
-OR
 echo KEYMAP=la-latin1 > /etc/vconsole.conf
 ```
 ```bash
