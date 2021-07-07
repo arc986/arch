@@ -1,3 +1,4 @@
+###### particiones propuestas
 |Disposit.|Tamaño|Tipo|
 |---|---|---|
 |/dev/nvme0n1p1|8M|Sistema EFI|
@@ -26,7 +27,7 @@ mkdir /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 ```bash
 mount -t f2fs /dev/nvme0n1p3 /mnt;mount /dev/nvme0n1p2 /mnt/boot;mount /dev/nvme0n1p1 /mnt/boot/efi;rm -Rf /mnt/;ls -Rla /mnt/
 ```
-
+###### Instalación
 ```bash
 pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager f2fs-tools fuse pipewire-pulseaudio pipewire-alsa pipewire-jack pipewire bluez sudo zsh stow ntfs-3g openssh systemd-swap htop xf86-input-evdev ufw fzf ttf-dejavu ttf-font-awesome xdg-utils exa xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau git hunspell-es_pa neovim firefox firefox-i18n-es-mx kitty flatpak virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat dmidecode podman podman-compose yarn stylus go rust nodejs python-virtualenv gnome-control-center gdm gnome-shell gnome-power-manager gnome-menus gnome-screenshot xdg-user-dirs-gtk eog evince gvfs-google gedit gnome-tweaks gnome-color-manager gufw nautilus gnome-keyring gnome-bluetooth xorg-xwayland
 ```
