@@ -99,13 +99,7 @@ EOF
 ```
 
 ```bash
-nvim /etc/systemd/swap.conf
-zram_enabled=1
-zram_size=$(( RAM_SIZE / 4 ))
-zram_count=${NCPU}
-zram_streams=${NCPU}
-zram_alg=zstd
-zram_prio=32767
+sed -i 's/# zram_/zram_/' /etc/systemd/swap.conf;sed -i 's/zram_enabled=0/zram_enabled=1/' /etc/systemd/swap.conf
 ```
 
 ```bash
