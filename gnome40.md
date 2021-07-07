@@ -50,7 +50,7 @@ ln -sf /usr/share/zoneinfo/America/Panama /etc/localtime
 ```
 
 ```bash
-echo es_PA.UTF-8 UTF-8 >/etc/locale.gen;echo LANG=es_PA.UTF-8 >/etc/locale.conf;echo LANG=es_PA.UTF-8 >>/etc/environment;echo LC_TIME=C >>/etc/environment;locale-gen
+echo es_PA.UTF-8 UTF-8 >/etc/locale.gen;echo LANG=es_PA.UTF-8 >/etc/locale.conf;echo LANG=es_PA.UTF-8 >>/etc/environment;echo LC_TIME=C >>/etc/environment;echo LC_COLLATE=C >>/etc/environment;locale-gen
 ```
 
 ```bash
@@ -63,24 +63,19 @@ grub-install --efi-directory=/boot/efi --bootloader-id='Arch Linux' --target=x86
 ```
 
 ```bash
-nvim /etc/mkinitcpio.conf
-MODULES=(f2fs fuse amdgpu radeon)
+sed -i 's/MODULES=()/MODULES=(f2fs fuse amdgpu radeon)/' /etc/mkinitcpio.conf
 ```
 
 ```bash
-nvim /etc/modprobe.d/amdgpu.conf
-options amdgpu si_support=1
-options amdgpu cik_support=1
+echo 'options amdgpu si_support=1' > /etc/modprobe.d/amdgpu.conf;echo 'options amdgpu cik_support=1' >> /etc/modprobe.d/amdgpu.conf
 ```
 
 ```bash
-nvim /etc/modprobe.d/radeon.conf
-options radeon si_support=0
-options radeon cik_support=0
+echo 'options radeon si_support=0' > /etc/modprobe.d/radeon.conf;echo 'options radeon cik_support=0' >> /etc/modprobe.d/radeon.conf
 ```
 
 ```bash
-nvim /etc/X11/xorg.conf.d/20-amdgpu.conf
+cat <<EOT >> /etc/X11/xorg.conf.d/20-amdgpu.conf
 Section "Screen"
 	Identifier "Screen"
 	DefaultDepth 30
@@ -92,6 +87,7 @@ Section "Device"
 	Option "TearFree" "true"
 	Option "DRI" "3"
 EndSection
+EOT
 ```
 
 ```bash
@@ -118,8 +114,7 @@ useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner,
 passwd $USERR
 ```
 ```bash
-visudo
-%wheel ALL=(ALL) ALL
+sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 ```
 
 ```bash
@@ -141,23 +136,14 @@ yay -S nerd-fonts-dejavu-complete
 exit
 ```
 
-```bash
-nvim /etc/pulse/default.pa
-.ifexists module-echo-cancel.so
-load-module module-echo-cancel aec_method=webrtc source_name=echocancel sink_name=echocancel1 format=s16le rate=48000 channels=2 channel_map=stereo
-set-default-source echocancel
-set-default-sink echocancel1
-.endif
-```
 
 ```bash
-nvim /etc/default/grub
-GRUB_DISABLE_OS_PROBER=false
+echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub
 ```
 
 
 ```bash
-mkinitcpio -p linux-lts;grub-mkconfig -o /boot/grub/grub.cfg
+mkinitcpio -p linux-zen;grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 ```bash
