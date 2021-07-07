@@ -4,6 +4,7 @@
 |/dev/nvme0n1p2|512M|Sistema de ficheros de Linux|
 |/dev/nvme0n1p3|MAX|Sistema de ficheros de Linux|
 
+###### si *NO existen* las particiones creadas
 ```
 mkfs.vfat /dev/nvme0n1p1
 mkfs.ext2 /dev/nvme0n1p2
@@ -21,8 +22,9 @@ mkdir /mnt/boot;mount /dev/nvme0n1p2 /mnt/boot
 ```
 mkdir /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 ```
+###### si *ya existen* las particiones creadas
 ```bash
-mount -t f2fs /dev/nvme0n1p3 /mnt;mount /dev/nvme0n1p2 /mnt/boot;mount /dev/nvme0n1p1 /mnt/boot/efi
+mount -t f2fs /dev/nvme0n1p3 /mnt;mount /dev/nvme0n1p2 /mnt/boot;mount /dev/nvme0n1p1 /mnt/boot/efi;rm -Rf /mnt/;ls -Rla /mnt/
 ```
 
 ```bash
@@ -60,6 +62,7 @@ echo es_PA.UTF-8 UTF-8 >/etc/locale.gen;echo LANG=es_PA.UTF-8 >/etc/locale.conf;
 ```bash
 echo KEYMAP=la-latin1 > /etc/vconsole.conf
 ```
+
 ```bash
 grub-install --efi-directory=/boot/efi --bootloader-id='Arch Linux' --target=x86_64-efi
 ```
@@ -106,7 +109,6 @@ sed -i 's/# zram_/zram_/' /etc/systemd/swap.conf;sed -i 's/zram_enabled=0/zram_e
 passwd
 ```
 
-
 ```bash
 export USERR=""
 ```
@@ -115,26 +117,26 @@ export USERR=""
 useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner,kvm,polkitd,libvirt -s /bin/zsh $USERR
 passwd $USERR
 ```
+
 ```bash
 sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 ```
 
 ```bash
-systemctl enable systemd-resolved.service
-systemctl enable NetworkManager
-systemctl enable bluetooth.service
-systemctl enable gdm.service
-systemctl enable libvirtd.service
-systemctl enable ufw.service
-systemctl enable systemd-swap.service
-systemctl enable upower.service
+systemctl enable systemd-resolved.service;systemctl enable NetworkManager;systemctl enable bluetooth.service;systemctl enable gdm.service;systemctl enable libvirtd.service;systemctl enable ufw.service;systemctl enable systemd-swap.service;systemctl enable upower.service;
 ```
 
 ```bash
 su $USERR
+```
+```bash
 cd /tmp;git clone https://aur.archlinux.org/yay.git;cd yay;makepkg -si
-yay -S upd72020x-fw
-yay -S nerd-fonts-dejavu-complete
+```
+```bash
+yay -S upd72020x-fw nerd-fonts-dejavu-complete
+```
+
+```bash
 exit
 ```
 
@@ -149,7 +151,8 @@ mkinitcpio -p linux-zen;grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 ```bash
-exit
-umount -R /mnt
+exit;umount -R /mnt
+```
+```bash
 reboot
 ```
