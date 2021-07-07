@@ -46,7 +46,7 @@ export PCNAME=""
 
 ```bash
 echo $PCNAME > /etc/hostname;
-cat >> hosts <<EOF
+cat >> /etc/hosts <<EOF
 127.0.0.1 localhost $PCNAME
 ::1 localhost $PCNAME
 EOF
