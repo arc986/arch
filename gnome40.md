@@ -75,7 +75,7 @@ echo 'options radeon si_support=0' > /etc/modprobe.d/radeon.conf;echo 'options r
 ```
 
 ```bash
-cat <<EOT >> /etc/X11/xorg.conf.d/20-amdgpu.conf
+cat <<EOF >> /etc/X11/xorg.conf.d/20-amdgpu.conf
 Section "Screen"
 	Identifier "Screen"
 	DefaultDepth 30
@@ -87,7 +87,7 @@ Section "Device"
 	Option "TearFree" "true"
 	Option "DRI" "3"
 EndSection
-EOT
+EOF
 ```
 
 ```bash
