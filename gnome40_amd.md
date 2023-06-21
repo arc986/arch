@@ -27,9 +27,10 @@ mkdir /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 ```bash
 mount -t f2fs /dev/nvme0n1p3 /mnt;mount /dev/nvme0n1p2 /mnt/boot;mount /dev/nvme0n1p1 /mnt/boot/efi;rm -Rf /mnt/;ls -Rla /mnt/
 ```
-###### Instalación
+
+###### Instalación 2023
 ```bash
-pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager f2fs-tools fuse pipewire-pulse pipewire-alsa pipewire-jack pipewire xdg-desktop-portal-gtk pipewire-media-session bluez sudo zsh wget ntfs-3g openssh systemd-swap htop xf86-input-evdev ufw fzf ttf-dejavu ttf-font-awesome xdg-utils exa xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau git hunspell-es_pa neovim firefox firefox-i18n-es-mx kitty flatpak virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat dmidecode podman podman-compose yarn stylus go rust nodejs python-virtualenv gnome-control-center gdm gnome-shell gnome-power-manager gnome-menus gnome-screenshot xdg-user-dirs-gtk eog evince gvfs-google gedit gnome-tweaks gnome-color-manager gufw nautilus gnome-keyring gnome-bluetooth xorg-xwayland wl-clipboard
+pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager f2fs-tools fuse pipewire-pulse pipewire-alsa pipewire-jack pipewire xdg-desktop-portal-gtk pipewire-media-session bluez sudo zsh ntfs-3g openssh systemd-swap xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau neovim xf86-input-evdev ufw flatpak htop wget fzf xdg-utils exa gdm eog gufw evince nautilus epiphany ttf-dejavu gnome-shell gnome-menus gvfs-google gnome-music gnome-boxes gnome-tweaks wl-clipboard gnome-console gnome-keyring xorg-xwayland gnome-calendar gnome-software hunspell-es_pa gnome-bluetooth gnome-calculator gnome-screenshot ttf-font-awesome gnome-text-editor xdg-user-dirs-gtk gnome-power-manager gnome-color-manager gnome-system-monitor gnome-control-center git podman podman-compose python-virtualenv rust
 ```
 
 ```bash
@@ -124,7 +125,7 @@ sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 ```
 
 ```bash
-systemctl enable systemd-resolved.service;systemctl enable NetworkManager;systemctl enable bluetooth.service;systemctl enable gdm.service;systemctl enable libvirtd.service;systemctl enable ufw.service;systemctl enable systemd-swap.service;systemctl enable upower.service;
+systemctl enable systemd-resolved.service;systemctl enable NetworkManager;systemctl enable bluetooth.service;systemctl enable gdm.service;systemctl enable ufw.service;systemctl enable systemd-swap.service;systemctl enable upower.service;
 ```
 
 ```bash
@@ -136,10 +137,10 @@ wget -N https://raw.githubusercontent.com/arc986/zsh/main/.zsh{rc,env,_history} 
 ```
 
 ```bash
-cd /tmp;git clone https://aur.archlinux.org/yay.git;cd yay;makepkg -si
+cd /tmp;git clone https://aur.archlinux.org/paru.git;cd paru;makepkg -si
 ```
 ```bash
-yay -S upd72020x-fw nerd-fonts-dejavu-complete
+paru -S upd72020x-fw nerd-fonts-dejavu-complete
 ```
 
 ```bash
