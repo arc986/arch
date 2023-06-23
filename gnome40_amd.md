@@ -30,7 +30,12 @@ mount -t f2fs /dev/nvme0n1p3 /mnt;mount /dev/nvme0n1p2 /mnt/boot;mount /dev/nvme
 
 ###### Instalación 2023
 ```bash
-pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager f2fs-tools fuse pipewire-pulse pipewire-alsa pipewire-jack pipewire xdg-desktop-portal-gtk pipewire-media-session bluez sudo zsh ntfs-3g openssh systemd-swap xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau neovim xf86-input-evdev ufw flatpak htop wget fzf xdg-utils exa gdm eog gufw evince nautilus epiphany ttf-dejavu gnome-shell gts-libav gnome-menus gvfs-google gnome-music gnome-boxes gnome-tweaks wl-clipboard gnome-console gnome-keyring xorg-xwayland gnome-calendar gnome-software hunspell-es_pa gnome-bluetooth gnome-calculator gnome-screenshot ttf-font-awesome gnome-text-editor xdg-user-dirs-gtk gnome-power-manager gnome-color-manager gnome-system-monitor gnome-control-center git podman podman-compose python-virtualenv rust
+pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager f2fs-tools fuse pipewire-pulse pipewire-alsa pipewire-jack pipewire xdg-desktop-portal-gtk WirePlumber pipewire-audio bluez sudo zsh ntfs-3g openssh systemd-swap xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau neovim xf86-input-evdev ufw flatpak htop wget fzf xdg-utils exa gdm eog gufw evince nautilus epiphany ttf-dejavu gnome-shell gts-libav gnome-menus gvfs-google gnome-music gnome-tweaks wl-clipboard gnome-console gnome-keyring xorg-xwayland gnome-calendar gnome-software hunspell-es_pa gnome-bluetooth gnome-calculator gnome-screenshot ttf-font-awesome gnome-text-editor xdg-user-dirs-gtk gnome-power-manager gnome-color-manager gnome-system-monitor gnome-control-center git podman podman-compose python-virtualenv rust gnome-boxes 
+```
+
+###### Instalación minimal no dev 2023
+```bash
+base amd-ucode bluez efibootmgr eog epiphany evince f2fs-tools gdm gnome-bluetooth gnome-color-manager gnome-console gnome-control-center gnome-keyring gnome-menus gnome-power-manager gnome-shell gnome-system-monitor gnome-tweaks grub gufw gvfs-google hunspell-es_pa linux-firmware linux-zen linux-zen-headers nautilus networkmanager ntfs-3g pipewire pipewire-audio pipewire-alsa pipewire-jack WirePlumber pipewire-pulse sudo systemd-swap ttf-font-awesome ufw vulkan-radeon wl-clipboard xdg-desktop-portal-gtk xf86-video-amdgpu xorg-xwayland zsh gnome-text-editor gnome-screenshot gnome-calculator gnome-software gts-libav xdg-utils flatpak neovim xorg-xwayland gnome-calendar ttf-font-awesome wget fzf exa
 ```
 
 ```bash
