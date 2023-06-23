@@ -35,7 +35,7 @@ pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-zen-headers linux-
 
 ###### Instalación minimal no dev 2023
 ```bash
-base amd-ucode bluez efibootmgr eog epiphany evince f2fs-tools gdm gnome-bluetooth gnome-color-manager gnome-console gnome-control-center gnome-keyring gnome-menus gnome-power-manager gnome-shell gnome-system-monitor gnome-tweaks grub gufw gvfs-google hunspell-es_pa linux-firmware linux-zen linux-zen-headers nautilus networkmanager ntfs-3g pipewire pipewire-audio pipewire-alsa pipewire-jack WirePlumber pipewire-pulse sudo systemd-swap ttf-font-awesome ufw vulkan-radeon wl-clipboard xdg-desktop-portal-gtk xf86-video-amdgpu xorg-xwayland zsh gnome-text-editor gnome-screenshot gnome-calculator gnome-software gts-libav xdg-utils flatpak neovim xorg-xwayland gnome-calendar ttf-font-awesome wget fzf exa
+pacstrap /mnt base amd-ucode bluez efibootmgr eog epiphany evince f2fs-tools gdm gnome-bluetooth gnome-color-manager gnome-console gnome-control-center gnome-keyring gnome-menus gnome-power-manager gnome-shell gnome-system-monitor gnome-tweaks grub gufw gvfs-google hunspell-es_pa linux-firmware linux-zen linux-zen-headers nautilus networkmanager ntfs-3g pipewire pipewire-audio pipewire-alsa pipewire-jack WirePlumber pipewire-pulse sudo systemd-swap ttf-font-awesome ufw vulkan-radeon wl-clipboard xdg-desktop-portal-gtk xf86-video-amdgpu xorg-xwayland zsh gnome-text-editor gnome-screenshot gnome-calculator gnome-software gts-libav xdg-utils flatpak neovim xorg-xwayland gnome-calendar ttf-font-awesome wget fzf exa
 ```
 
 ```bash
