@@ -1,42 +1,45 @@
+| Paso | Comando / Acción |
+|------|------------------|
+| 1. Verificar interfaces de red disponibles | `ip link` |
+| 2. Habilitar interfaz Wi-Fi | `ip link set <INTERFACE> up` (Sustituir `<INTERFACE>` por el nombre de la interfaz, por ejemplo, `wlan0` o `wlp3s0`) |
+| 3. Buscar redes disponibles | `iwctl station <INTERFACE> scan` (Reemplazar `<INTERFACE>` por el nombre de la interfaz, por ejemplo, `wlan0`) |
+| 4. Ver redes disponibles | `iwctl station <INTERFACE> get-networks` |
+| 5. Conectar a una red Wi-Fi | `iwctl station <INTERFACE> connect <SSID>` (Reemplazar `<SSID>` por el nombre de tu red Wi-Fi) |
+| 6. Verificar la conexión | `ping -c 3 google.com` |
+| 7. Si se requiere contraseña | Durante el paso 5, se te pedirá que ingreses la contraseña de la red Wi-Fi. |
+
 ###### particiones propuestas
 |Disposit.|Tamaño|Tipo|
 |---|---|---|
 |/dev/nvme0n1p1|8M|Sistema EFI|
-|/dev/nvme0n1p2|512M|Sistema de ficheros de Linux|
-|/dev/nvme0n1p3|MAX|Sistema de ficheros de Linux|
+|/dev/nvme0n1p2|MAX|Sistema de ficheros de Linux|
 
 ###### si *NO existen* las particiones creadas
-```
+```bash
 mkfs.vfat /dev/nvme0n1p1
-mkfs.ext2 /dev/nvme0n1p2
-mkfs.f2fs /dev/nvme0n1p3
 ```
-
-```
-mount -t f2fs /dev/nvme0n1p3 /mnt
-```
-
-```
-mkdir /mnt/boot;mount /dev/nvme0n1p2 /mnt/boot
-```
-
-```
-mkdir /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
-```
-###### si *ya existen* las particiones creadas
 ```bash
-mount -t f2fs /dev/nvme0n1p3 /mnt;mount /dev/nvme0n1p2 /mnt/boot;mount /dev/nvme0n1p1 /mnt/boot/efi;rm -Rf /mnt/;ls -Rla /mnt/
+mkfs.btrfs -f -d single -m single -O compression=lz4,space_cache=v2,block_size=4096,ssd -L "root" /dev/nvme0n1p2
 ```
 
-###### Instalación 2023
 ```bash
-pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager f2fs-tools fuse pipewire-pulse pipewire-alsa pipewire-jack pipewire xdg-desktop-portal-gtk WirePlumber pipewire-audio bluez sudo zsh ntfs-3g openssh systemd-swap xf86-video-amdgpu vulkan-radeon libva-mesa-driver mesa-vdpau neovim xf86-input-evdev ufw flatpak htop wget fzf xdg-utils exa gdm eog gufw evince nautilus epiphany ttf-dejavu gnome-shell gts-libav gnome-menus gvfs-google gnome-music gnome-tweaks wl-clipboard gnome-console gnome-keyring xorg-xwayland gnome-calendar gnome-software hunspell-es_pa gnome-bluetooth gnome-calculator gnome-screenshot ttf-font-awesome gnome-text-editor xdg-user-dirs-gtk gnome-power-manager gnome-color-manager gnome-system-monitor gnome-control-center git podman podman-compose python-virtualenv rust gnome-boxes 
+mount -o noatime,compress=lz4,space_cache=v2,ssd,discard=async,autodefrag /dev/nvme0n1p2 /mnt
 ```
 
-###### Instalación minimal no dev 2023
 ```bash
-pacstrap /mnt base amd-ucode bluez efibootmgr eog epiphany evince f2fs-tools gdm gnome-bluetooth gnome-color-manager gnome-console gnome-control-center gnome-keyring gnome-menus gnome-power-manager gnome-shell gnome-system-monitor gnome-tweaks grub gufw gvfs-google hunspell-es_pa linux-firmware linux-zen linux-zen-headers nautilus networkmanager ntfs-3g pipewire pipewire-audio pipewire-alsa pipewire-jack WirePlumber pipewire-pulse sudo systemd-swap ttf-font-awesome ufw vulkan-radeon wl-clipboard xdg-desktop-portal-gtk xf86-video-amdgpu xorg-xwayland zsh gnome-text-editor gnome-screenshot gnome-calculator gnome-software gts-libav xdg-utils flatpak neovim xorg-xwayland gnome-calendar ttf-font-awesome wget fzf exa
+mkdir -p /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 ```
+
+###### Instalación minimal no dev 2025 Gnome
+```bash
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp totem simple-scan gnome-disk-utility gnome-bluetooth gnome-snapshot system-config-printer decibels xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince console xorg-xwayland firefox firefox-i18n-es-es
+```
+
+###### Instalación minimal no dev 2025 Kde
+```bash
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
+```
+
 
 ```bash
 genfstab -pU /mnt >> /mnt/etc/fstab
@@ -67,7 +70,7 @@ echo es_PA.UTF-8 UTF-8 >/etc/locale.gen;echo LANG=es_PA.UTF-8 >/etc/locale.conf;
 ```
 
 ```bash
-echo KEYMAP=la-latin1 > /etc/vconsole.conf
+echo KEYMAP=la-latin1 > /etc/vconsole.conf;echo FONT=ter-132n >> /etc/vconsole.conf
 ```
 
 ```bash
@@ -75,7 +78,7 @@ grub-install --efi-directory=/boot/efi --bootloader-id='Arch Linux' --target=x86
 ```
 
 ```bash
-sed -i 's/MODULES=()/MODULES=(f2fs fuse amdgpu radeon)/' /etc/mkinitcpio.conf
+sed -i 's/MODULES=()/MODULES=(f2fs btrfs amdgpu)/' /etc/mkinitcpio.conf
 ```
 
 ```bash
@@ -102,8 +105,12 @@ EndSection
 Section "Device"
     Identifier "AMD"
     Driver "amdgpu"
-	Option "TearFree" "true"
-	Option "DRI" "3"
+    Option "TearFree" "true"            # Evitar el tearing
+    Option "DRI" "3"                   # Aceleración gráfica completa con DRI3
+    Option "SwapbuffersWait" "true"    # Habilitar V-Sync (sincronización vertical)
+    Option "ForceLowPowerMode" "true"  # Activar el modo de bajo consumo
+    Option "DynamicPowerManagement" "true"   # Habilitar DPM
+    Option "FBC" "true"                # Habilitar Framebuffer Compression
 EndSection
 EOF
 ```
@@ -121,39 +128,36 @@ export USERR=""
 ```
 
 ```bash
-useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner,kvm,polkitd,libvirt -s /bin/zsh $USERR
+useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner,polkitd -s /bin/bash $USERR
 passwd $USERR
 ```
 
 ```bash
-sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+EDITOR=nvim visudo
 ```
 
 ```bash
-systemctl enable systemd-resolved.service;systemctl enable NetworkManager;systemctl enable bluetooth.service;systemctl enable gdm.service;systemctl enable ufw.service;systemctl enable systemd-swap.service;systemctl enable upower.service;
+systemctl enable systemd-resolved.service;systemctl enable NetworkManager;systemctl enable bluetooth.service;systemctl enable ufw.service;systemctl;sudo systemctl enable tlp enable upower.service;
 ```
-
+gnome
 ```bash
-su $USERR
+systemctl enable gdm.service
 ```
-
+kde
 ```bash
-wget -N https://raw.githubusercontent.com/arc986/zsh/main/.zsh{rc,env,_history} -P ~/
-```
-
-```bash
-cd /tmp;git clone https://aur.archlinux.org/paru.git;cd paru;makepkg -si
-```
-```bash
-paru -S upd72020x-fw nerd-fonts-dejavu-complete
-```
-
-```bash
-exit
+systemctl enable sddm.service
 ```
 
 ```bash
 echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub
+```
+agregar esto para AMD
+quedando algo asi GRUB_CMDLINE_LINUX_DEFAULT="quiet amdgpu.dc=1 amdgpu.gpu_sched=1"
+```bash
+nvim /etc/default/grub
+```
+```bash
+amdgpu.dpm=1 amdgpu.dc=1 amdgpu.gpu_sched=1 amdgpu.ppfeaturemask=0xfffd7fff
 ```
 
 
@@ -162,7 +166,10 @@ mkinitcpio -p linux-zen;grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 ```bash
-exit;umount -R /mnt
+exit
+```
+```bash
+umount -R /mnt
 ```
 ```bash
 reboot
