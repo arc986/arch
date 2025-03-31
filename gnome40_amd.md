@@ -19,7 +19,7 @@
 mkfs.vfat /dev/nvme0n1p1
 ```
 ```bash
-mkfs.btrfs -f -d single -m single -O compression=lz4,space_cache=v2,block_size=4096,ssd -L "root" /dev/nvme0n1p2
+mkfs.btrfs -f -d single -m single -L "root" /dev/nvme0n1p2
 ```
 
 ```bash
