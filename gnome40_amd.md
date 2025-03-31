@@ -47,7 +47,7 @@ pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware am
 
 ###### Instalación minimal no dev 2025 Kde
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu fail2ban timeshift kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu plymouth fail2ban timeshift kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
 ```
 
 
@@ -103,6 +103,10 @@ cat > /etc/modprobe.d/radeon.conf <<EOF
 options radeon si_support=0
 options radeon cik_support=0
 EOF
+```
+
+```bash
+echo RADV_PERFTEST=aco >> /etc/environment
 ```
 
 ```bash
@@ -171,7 +175,10 @@ quedando algo asi GRUB_CMDLINE_LINUX_DEFAULT="quiet amdgpu.dc=1 amdgpu.gpu_sched
 nvim /etc/default/grub
 ```
 ```bash
-amdgpu.dpm=1 amdgpu.dc=1 amdgpu.gpu_sched=1 amdgpu.ppfeaturemask=0xfffd7fff
+amdgpu.dpm=1 amdgpu.dc=1 amdgpu.gpu_sched=1 amdgpu.ppfeaturemask=0xffffffff
+quiet splash amdgpu.dc=1 amdgpu.gpu_sched=1 amdgpu.ppfeaturemask=0xfffd7fff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.rebar=1
+quiet splash loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.gpu_sched=1 amdgpu.ppfeaturemask=0xfffd7fff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.powersave=1 amdgpu.force_power_profile=low
+
 ```
 
 ```bash
@@ -180,6 +187,9 @@ mkinitcpio -p linux-zen;grub-mkconfig -o /boot/grub/grub.cfg
 
 ```bash
 ufw default deny incoming;ufw enable
+```
+```bash
+plymouth-set-default-theme bgrt
 ```
 
 ```bash
@@ -190,4 +200,9 @@ umount -R /mnt
 ```
 ```bash
 reboot
+```
+
+steam
+```bash
+RADV_PERFTEST=aco %command%
 ```
