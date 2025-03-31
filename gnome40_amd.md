@@ -30,14 +30,15 @@ mount -o noatime,compress=lz4,space_cache=v2,ssd,discard=async,autodefrag /dev/n
 mkdir -p /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 ```
 
+
 ###### Instalación minimal no dev 2025 Gnome
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp totem simple-scan gnome-disk-utility gnome-bluetooth gnome-snapshot system-config-printer decibels xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince console xorg-xwayland firefox firefox-i18n-es-es
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu showtime simple-scan gnome-disk-utility gnome-bluetooth gnome-snapshot system-config-printer decibels xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince console xorg-xwayland firefox firefox-i18n-es-es
 ```
 
 ###### Instalación minimal no dev 2025 Kde
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
 ```
 
 
@@ -99,7 +100,8 @@ EOF
 cat > /etc/X11/xorg.conf.d/20-amdgpu.conf <<EOF 
 Section "Screen"
 	Identifier "Screen"
-	DefaultDepth 30
+	#DefaultDepth 30
+	DefaultDepth 24
 EndSection
 
 Section "Device"
@@ -111,6 +113,9 @@ Section "Device"
     Option "ForceLowPowerMode" "true"  # Activar el modo de bajo consumo
     Option "DynamicPowerManagement" "true"   # Habilitar DPM
     Option "FBC" "true"                # Habilitar Framebuffer Compression
+    Option "PowerPlay" "true"          # Activar características avanzadas de ahorro de energía
+    Option "AccelMethod" "glamor"      # Mejor rendimiento con OpenGL para reducir carga
+    Option "VariableRefresh" "true"   # Activar soporte para FreeSync con el Samsung G8
 EndSection
 EOF
 ```
