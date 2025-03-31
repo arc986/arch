@@ -174,7 +174,7 @@ quedando algo asi GRUB_CMDLINE_LINUX_DEFAULT=""
 nvim /etc/default/grub
 ```
 ```bash
-quiet splash loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.gpu_sched=1 amdgpu.ppfeaturemask=0xfffd7fff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.rebar=1 amdgpu.powersave=1 amdgpu.force_power_profile=low
+quiet splash loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.gpu_sched=1 amdgpu.ppfeaturemask=0xffffffff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.rebar=1 amdgpu.powersave=1 amdgpu.force_power_profile=low
 ```
 
 ```bash
