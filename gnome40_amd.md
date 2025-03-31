@@ -23,16 +23,15 @@ mkfs.btrfs -f -d single -m single -O compression=lz4,space_cache=v2,block_size=4
 ```
 
 ```bash
-mount -o noatime,compress=lz4,space_cache=v2,ssd,discard=async,autodefrag /dev/nvme0n1p2 /mnt
-mount -o noatime,compress=lz4,space_cache=v2,ssd,discard=async,autodefrag /dev/nvme0n1p2 /mnt
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,discard=async,autodefrag /dev/nvme0n1p2 /mnt
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@var
 umount /mnt
-mount -o noatime,compress=lz4,space_cache=v2,ssd,subvol=@ /dev/nvme0n1p2 /mnt
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@ /dev/nvme0n1p2 /mnt
 mkdir -p /mnt/{home,var}
-mount -o noatime,compress=lz4,space_cache=v2,ssd,subvol=@home /dev/nvme0n1p2 /mnt/home
-mount -o noatime,compress=lz4,space_cache=v2,ssd,subvol=@var /dev/nvme0n1p2 /mnt/var
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@home /dev/nvme0n1p2 /mnt/home
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@var /dev/nvme0n1p2 /mnt/var
 ```
 
 ```bash
@@ -42,12 +41,12 @@ mkdir -p /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 
 ###### Instalación minimal no dev 2025 Gnome
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu fail2ban timeshift showtime simple-scan gnome-disk-utility gnome-bluetooth gnome-snapshot system-config-printer decibels xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince console xorg-xwayland firefox firefox-i18n-es-es
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu fail2ban timeshift util-linux showtime simple-scan gnome-disk-utility gnome-bluetooth gnome-snapshot system-config-printer decibels xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince console xorg-xwayland firefox firefox-i18n-es-es
 ```
 
 ###### Instalación minimal no dev 2025 Kde
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu plymouth fail2ban timeshift kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu plymouth fail2ban timeshift util-linux kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
 ```
 
 
@@ -106,7 +105,7 @@ EOF
 ```
 
 ```bash
-echo RADV_PERFTEST=aco >> /etc/environment
+echo RADV_PERFTEST=aco >> /etc/environment;echo DXVK_ASYNC=1 >> /etc/environment
 ```
 
 ```bash
@@ -189,8 +188,39 @@ mkinitcpio -p linux-zen;grub-mkconfig -o /boot/grub/grub.cfg
 ufw default deny incoming;ufw enable
 ```
 ```bash
-plymouth-set-default-theme bgrt
+plymouth-set-default-theme -R bgrt
 ```
+```bash
+sudo modprobe zram;echo "zram" | sudo tee /etc/modules-load.d/zram.conf
+```
+```bash
+cat > /etc/zram-init.sh <<EOF 
+#!/bin/bash
+modprobe zram
+zramctl --find --size 4G
+mkswap /dev/zram0
+swapon /dev/zram0
+EOF
+```
+```bash
+cat > /etc/systemd/system/zram.service <<EOF 
+[Unit]
+Description=Configurar ZRAM al inicio
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/etc/zram-init.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+```bash
+sudo systemctl enable zram.service
+```
+
 
 ```bash
 exit
@@ -205,4 +235,10 @@ reboot
 steam
 ```bash
 RADV_PERFTEST=aco %command%
+RADV_PERFTEST=aco VK_INSTANCE_LAYERS=VK_LAYER_MESA_overlay %command%
 ```
+```bash
+sudo timeshift --create --tags D --comments "Snapshot inicial"
+swapon --show
+```
+
