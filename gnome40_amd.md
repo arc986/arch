@@ -41,12 +41,12 @@ mkdir -p /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 
 ###### Instalación minimal no dev 2025 Gnome
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu fail2ban timeshift util-linux showtime simple-scan gnome-disk-utility gnome-bluetooth gnome-snapshot system-config-printer decibels xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince console xorg-xwayland firefox firefox-i18n-es-es
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu sof-firmware wireless-regdb hunspell-es_pa tlp xorg-server xf86-video-amdgpu fail2ban timeshift util-linux showtime simple-scan gnome-disk-utility gnome-bluetooth gnome-snapshot system-config-printer decibels xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince console xorg-xwayland firefox firefox-i18n-es-es
 ```
 
 ###### Instalación minimal no dev 2025 Kde
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu hunspell-es_pa tlp xorg-server xf86-video-amdgpu plymouth fail2ban timeshift util-linux kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu sof-firmware wireless-regdb hunspell-es_pa tlp xorg-server xf86-video-amdgpu plymouth fail2ban timeshift util-linux kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
 ```
 
 
@@ -174,7 +174,7 @@ quedando algo asi GRUB_CMDLINE_LINUX_DEFAULT=""
 nvim /etc/default/grub
 ```
 ```bash
-quiet splash loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.gpu_sched=1 amdgpu.ppfeaturemask=0xffffffff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.rebar=1 amdgpu.powersave=1 amdgpu.force_power_profile=low
+quiet splash loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.ppfeaturemask=0xffffffff amdgpu.noretry=0 amdgpu.vm_fragment_size=9
 ```
 
 ```bash
