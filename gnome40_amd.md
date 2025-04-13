@@ -212,7 +212,7 @@ quiet splash loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.ppfeaturemask=0xffffffff
 ```
 
 ```bash
-mkinitcpio -p linux-zen;grub-mkconfig -o /boot/grub/grub.cfg
+mkinitcpio -p linux-cachyos-bore-lto;grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 ```bash
