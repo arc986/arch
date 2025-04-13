@@ -72,7 +72,7 @@ showtime simple-scan gnome-disk-utility gnome-bluetooth snapshot amberol xdg-use
 kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark
 ```
 
-####### Impresoras
+###### Impresoras
 ```bash
 cups cups-pdf system-config-printer avahi
 ```
