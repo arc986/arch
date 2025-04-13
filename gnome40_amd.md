@@ -62,12 +62,12 @@ pacman -Syy
 pacstrap /mnt base grub efibootmgr linux-cachyos-bore-lto linux-cachyos-bore-lto-headers linux-firmware amd-ucode iwd wireless-regdb btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau xf86-video-amdgpu amdgpu amdgpu_top upower sof-firmware sudo ufw thermald timeshift util-linux zram-generator plymouth xorg xorg-server xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa nvme-cli mdadm
 ```
 
-####### Gnome
+###### Gnome
 ```bash
 showtime simple-scan gnome-disk-utility gnome-bluetooth snapshot amberol xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince gnome-console
 ```
 
-####### Kde
+###### Kde
 ```bash
 kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark
 ```
