@@ -38,6 +38,20 @@ mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@var /dev/nvme0n1p2 /
 mkdir -p /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 ```
 
+###### Modificar para instalar kernel cachyos-v3
+```bash
+nvim /etc/pacman.conf
+Architecture = x86_64_v3
+[cachyos-v3]
+SigLevel = Required DatabaseOptional
+Server = https://cdn77.cachyos.org/repo/$arch_v3/$repo
+```
+
+```bash
+pacman -Syy
+```
+
+
 
 ###### Instalación minimal no dev 2025 Gnome
 ```bash
