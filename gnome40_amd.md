@@ -169,10 +169,6 @@ EOF
 ```
 
 ```bash
-sed -i 's/#zram_/zram_/' /etc/systemd/swap.conf;sed -i 's/zram_enabled=0/zram_enabled=1/' /etc/systemd/swap.conf
-```
-
-```bash
 passwd
 ```
 
@@ -223,37 +219,6 @@ ufw default deny incoming;ufw enable
 ```bash
 plymouth-set-default-theme -R bgrt
 ```
-```bash
-sudo modprobe zram;echo "zram" | sudo tee /etc/modules-load.d/zram.conf
-```
-```bash
-cat > /etc/zram-init.sh <<EOF 
-#!/bin/bash
-modprobe zram
-zramctl --find --size 4G
-mkswap /dev/zram0
-swapon /dev/zram0
-EOF
-```
-```bash
-cat > /etc/systemd/system/zram.service <<EOF 
-[Unit]
-Description=Configurar ZRAM al inicio
-After=multi-user.target
-
-[Service]
-Type=oneshot
-ExecStart=/etc/zram-init.sh
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-EOF
-```
-```bash
-sudo systemctl enable zram.service
-```
-
 
 ```bash
 exit
@@ -272,6 +237,5 @@ RADV_PERFTEST=aco VK_INSTANCE_LAYERS=VK_LAYER_MESA_overlay %command%
 ```
 ```bash
 sudo timeshift --create --tags D --comments "Snapshot inicial"
-swapon --show
 ```
 
