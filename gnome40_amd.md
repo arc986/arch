@@ -130,6 +130,8 @@ EOF
 cat > /etc/modprobe.d/amdgpu.conf <<EOF
 options amdgpu si_support=1
 options amdgpu cik_support=1
+options amdgpu power_dpm_state=battery
+options amdgpu power_dpm_force_performance_level=low
 EOF
 ```
 
@@ -206,7 +208,7 @@ quedando algo asi GRUB_CMDLINE_LINUX_DEFAULT=""
 nvim /etc/default/grub
 ```
 ```bash
-quiet splash loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.ppfeaturemask=0xffffffff amdgpu.noretry=0 amdgpu.vm_fragment_size=9
+quiet splash loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.ppfeaturemask=0xffffffff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.powerplay=1
 ```
 
 ```bash
