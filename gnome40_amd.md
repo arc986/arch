@@ -38,10 +38,16 @@ mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@var /dev/nvme0n1p2 /
 mkdir -p /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 ```
 
-###### Modificar para instalar kernel cachyos-v3
+###### Modificar para instalar kernel cachyos-v3 para AMD ZEN3
 ```bash
 nvim /etc/pacman.conf
+# GENERAL OPTIONS
 Architecture = x86_64_v3
+
+# REPOSITORIES
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+
 [cachyos-v3]
 SigLevel = Required DatabaseOptional
 Server = https://cdn77.cachyos.org/repo/$arch_v3/$repo
@@ -51,18 +57,25 @@ Server = https://cdn77.cachyos.org/repo/$arch_v3/$repo
 pacman -Syy
 ```
 
-
-
-###### Instalación minimal no dev 2025 Gnome
+###### Instalación minimal no dev Base
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu sof-firmware wireless-regdb hunspell-es_pa tlp xorg-server xf86-video-amdgpu fail2ban timeshift util-linux showtime simple-scan gnome-disk-utility gnome-bluetooth gnome-snapshot system-config-printer decibels xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince console xorg-xwayland firefox firefox-i18n-es-es
+pacstrap /mnt base grub efibootmgr linux-cachyos-bore-lto linux-cachyos-bore-lto-headers linux-firmware amd-ucode iwd wireless-regdb btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau xf86-video-amdgpu amdgpu amdgpu_top upower sof-firmware sudo ufw thermald timeshift util-linux zram-generator plymouth xorg xorg-server xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa nvme-cli mdadm
 ```
 
-###### Instalación minimal no dev 2025 Kde
+####### Gnome
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode networkmanager btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa sudo ufw mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower terminus-font neovim htop cups cups-pdf amdgpu sof-firmware wireless-regdb hunspell-es_pa tlp xorg-server xf86-video-amdgpu plymouth fail2ban timeshift util-linux kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark xorg-xwayland firefox firefox-i18n-es-es
+showtime simple-scan gnome-disk-utility gnome-bluetooth snapshot amberol xdg-user-dirs-gtk gdm gnome-shell gnome-control-center nautilus loupe evince gnome-console
 ```
 
+####### Kde
+```bash
+kaffeine skanlite kdepartitionmanager bluedevil spectacle print-manager elisa xdg-user-dirs sddm plasma-desktop systemsettings dolphin gwenview okular konsole ark
+```
+
+####### Impresoras
+```bash
+cups cups-pdf system-config-printer avahi
+```
 
 ```bash
 genfstab -pU /mnt >> /mnt/etc/fstab
@@ -102,6 +115,15 @@ grub-install --efi-directory=/boot/efi --bootloader-id='Arch Linux' --target=x86
 
 ```bash
 sed -i 's/MODULES=()/MODULES=(f2fs btrfs amdgpu)/' /etc/mkinitcpio.conf
+```
+
+```bash
+nvim /etc/systemd/zram-generator.conf
+cat > /etc/systemd/zram-generator.conf <<EOF
+[zram0]
+zram-size = 4096
+compression-algorithm = zstd
+EOF
 ```
 
 ```bash
@@ -168,7 +190,7 @@ EDITOR=nvim visudo
 ```
 
 ```bash
-systemctl enable systemd-resolved.service;systemctl enable NetworkManager;systemctl enable bluetooth.service;systemctl enable ufw.service;systemctl enable tlp;systemctl enable upower.service;systemctl enable fail2ban;
+systemctl enable systemd-resolved.service;systemctl enable iwd.service;systemctl enable bluetooth.service;systemctl enable ufw.service;systemctl enable thermald.service;systemctl enable upower.service;sudo systemctl enable fstrim.timer;systemctl enable systemd-zram-setup@zram0.service;
 ```
 gnome
 ```bash
