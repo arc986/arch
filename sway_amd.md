@@ -36,7 +36,7 @@ mkdir -p /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
 
 ###### Instalación minimal no dev Base clean 
 ```bash
-pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode iwd wireless-regdb btrfs-progs fuse pipewire pipewire-pulse wireplumber pipewire-alsa mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau amdgpu upower sof-firmware sudo ufw snapper util-linux zram-generator plymouth xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa
+pacstrap /mnt base grub efibootmgr linux-zen linux-zen-headers linux-firmware amd-ucode iwd wireless-regdb btrfs-progs fuse pipewire pipewire-pulse wireplumber pipewire-alsa mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau amdgpu upower sof-firmware sudo ufw snapper util-linux plymouth xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa
 ```
 
 ```bash
@@ -80,14 +80,6 @@ sed -i 's/MODULES=()/MODULES=(btrfs amdgpu)/' /etc/mkinitcpio.conf
 ```
 
 ```bash
-nvim /etc/systemd/zram-generator.conf
-cat > /etc/systemd/zram-generator.conf <<EOF
-[zram0]
-zram-size = 4096
-compression-algorithm = zstd
-EOF
-```
-```bash
 echo RADV_PERFTEST=aco >> /etc/environment;echo DXVK_ASYNC=1 >> /etc/environment
 ```
 
@@ -109,7 +101,7 @@ EDITOR=nvim visudo
 ```
 
 ```bash
-systemctl enable systemd-resolved.service;systemctl enable iwd.service;systemctl enable bluetooth.service;systemctl enable ufw.service;systemctl enable upower.service;sudo systemctl enable fstrim.timer;systemctl enable systemd-zram-setup@zram0.service;
+systemctl enable systemd-resolved.service;systemctl enable iwd.service;systemctl enable bluetooth.service;systemctl enable ufw.service;systemctl enable upower.service;sudo systemctl enable fstrim.timer;
 ```
 ```bash
 echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub
