@@ -119,9 +119,6 @@ mkinitcpio -p linux-zen;grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 ```bash
-ufw default deny incoming;ufw enable
-```
-```bash
 plymouth-set-default-theme -R bgrt
 ```
 
@@ -134,6 +131,11 @@ umount -R /mnt
 ```bash
 reboot
 ```
+
+```bash
+ufw default deny incoming;ufw enable
+```
+
 ```bash
 snapper -c root create --description "Backup antes de actualización"
 snapper -c root list
