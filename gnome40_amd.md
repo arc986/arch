@@ -57,9 +57,15 @@ Server = https://cdn77.cachyos.org/repo/$arch_v3/$repo
 pacman -Syy
 ```
 
+
+###### Instalación minimal no dev Base clean 
+```bash
+pacstrap /mnt base grub efibootmgr linux-cachyos-bore-lto linux-cachyos-bore-lto-headers linux-firmware amd-ucode iwd wireless-regdb btrfs-progs fuse pipewire pipewire-pulse wireplumber pipewire-alsa mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau amdgpu upower sof-firmware sudo ufw snapper util-linux zram-generator plymouth xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa
+```
+
 ###### Instalación minimal no dev Base
 ```bash
-pacstrap /mnt base grub efibootmgr linux-cachyos-bore-lto linux-cachyos-bore-lto-headers linux-firmware amd-ucode iwd wireless-regdb btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau xf86-video-amdgpu amdgpu amdgpu_top upower sof-firmware sudo ufw thermald timeshift util-linux zram-generator plymouth xorg xorg-server xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa nvme-cli mdadm
+pacstrap /mnt base grub efibootmgr linux-cachyos-bore-lto linux-cachyos-bore-lto-headers linux-firmware amd-ucode iwd wireless-regdb btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau xf86-video-amdgpu amdgpu amdgpu_top upower sof-firmware sudo ufw thermald Snapper util-linux zram-generator plymouth xorg xorg-server xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa nvme-cli mdadm
 ```
 
 ###### Gnome
