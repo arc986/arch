@@ -139,5 +139,6 @@ ufw default deny incoming;ufw enable
 snapper -c root create --description "Backup antes de actualización"
 snapper -c root list
 snapper -c root rollback <ID>
-```
 
+sudo pacman -S i3status-rust sway greetd foot swaybg swaylock swayidle xdg-desktop-portal-wlr clipman mako wf-recorder light nnn
+```
