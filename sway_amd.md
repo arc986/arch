@@ -9,29 +9,32 @@
 | 7. Si se requiere contraseña | Durante el paso 5, se te pedirá que ingreses la contraseña de la red Wi-Fi. |
 
 ###### particiones propuestas
-|Disposit.|Tamaño|Tipo|
-|---|---|---|
-|/dev/nvme0n1p1|8M|Sistema EFI|
-|/dev/nvme0n1p2|MAX|Sistema de ficheros de Linux|
+| Disposit.        | Tamaño | Tipo             |
+| :--------------- | :----- | :--------------- |
+| /dev/nvme0n1p1 | 550M   | EFI System       |
+| /dev/nvme0n1p2 | MAX    | Linux filesystem |
 
 ###### si *NO existen* las particiones creadas
 ```bash
-mkfs.vfat /dev/nvme0n1p1
+mkfs.vfat -F 32 /dev/nvme0n1p1
 ```
 ```bash
 mkfs.btrfs -f -d single -m single -L "root" /dev/nvme0n1p2
 ```
 
 ```bash
-mount -o noatime,compress=zstd:3,space_cache=v2,ssd,discard=async,autodefrag /dev/nvme0n1p2 /mnt
+mount /dev/nvme0n1p2 /mnt
 btrfs subvolume create /mnt/@root
 btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@snapshots
 umount /mnt
-mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@root /dev/nvme0n1p2 /mnt
-mkdir -p /mnt/{home}
-mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@home /dev/nvme0n1p2 /mnt/home
-mkdir -p /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
+```
+
+```bash
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,autodefrag,subvol=@root /dev/nvme0n1p2 /mnt
+mkdir -p /mnt/{home,boot/efi}
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,autodefrag,subvol=@home /dev/nvme0n1p2 /mnt/home
+mount /dev/nvme0n1p1 /mnt/boot/efi
 ```
 
 ###### Instalación minimal no dev Base clean 
@@ -140,5 +143,5 @@ snapper -c root create --description "Backup antes de actualización"
 snapper -c root list
 snapper -c root rollback <ID>
 
-sudo pacman -S i3status-rust sway greetd foot swaybg swaylock swayidle xdg-desktop-portal-wlr clipman mako wf-recorder light nnn
+sudo pacman -S i3status-rust sway ly foot swaybg swaylock swayidle xdg-desktop-portal-wlr clipman mako wf-recorder light nnn
 ```
