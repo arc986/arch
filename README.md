@@ -103,3 +103,12 @@ pacman -S gnome-shell nautilus gnome-terminal gnome-control-center gdm firefox f
 systemctl enable laptop-mode.service
 systemctl enable gdm.service
 ```
+
+
+
+title   Arch Linux (CachyOS Bore LTO)
+linux   /vmlinuz-linux-cachyos-bore-lto
+initrd  /amd-ucode.img
+initrd  /initramfs-linux-cachyos-bore-lto.img
+options root=UUID=TU_UUID_DE_LA_PARTICION_RAIZ rw rootflags=subvol=@ quiet loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.ppfeaturemask=0xffffffff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.powerplay=1
+
