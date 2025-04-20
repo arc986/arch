@@ -11,7 +11,7 @@
 ###### particiones propuestas
 |Disposit.|Tamaño|Tipo|
 |---|---|---|
-|/dev/nvme0n1p1|8M|Sistema EFI|
+|/dev/nvme0n1p1|25M|Sistema EFI|
 |/dev/nvme0n1p2|MAX|Sistema de ficheros de Linux|
 
 ###### si *NO existen* las particiones creadas
@@ -23,24 +23,19 @@ mkfs.btrfs -f -d single -m single -L "root" /dev/nvme0n1p2
 ```
 
 ```bash
-mount -o noatime,compress=zstd:3,space_cache=v2,ssd,discard=async,autodefrag /dev/nvme0n1p2 /mnt
-btrfs subvolume create /mnt/@
-btrfs subvolume create /mnt/@home
-btrfs subvolume create /mnt/@var
+mount /dev/nvme0n1p2 /mnt
+btrfs subvolume create /mnt/@;btrfs subvolume create /mnt/@home;btrfs subvolume create /mnt/@snapshots
 umount /mnt
 mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@ /dev/nvme0n1p2 /mnt
-mkdir -p /mnt/{home,var}
+mkdir -p /mnt/{home,boot/efi,.snapshots}
 mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@home /dev/nvme0n1p2 /mnt/home
-mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@var /dev/nvme0n1p2 /mnt/var
-```
-
-```bash
-mkdir -p /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@snapshots /dev/nvme0n1p2 /mnt/.snapshots
+mount /dev/nvme0n1p1 /mnt/boot/efi
 ```
 
 ###### Modificar para instalar kernel cachyos-v3 para AMD ZEN3
 ```bash
-nvim /etc/pacman.conf
+vim /etc/pacman.conf
 # GENERAL OPTIONS
 Architecture = x86_64_v3
 
@@ -54,18 +49,25 @@ Server = https://cdn77.cachyos.org/repo/$arch_v3/$repo
 ```
 
 ```bash
+pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
+pacman-key --lsign-key F3B607488DB35A47
 pacman -Syy
 ```
 
 
 ###### Instalación minimal no dev Base clean 
 ```bash
-pacstrap /mnt base grub efibootmgr linux-cachyos-bore-lto linux-cachyos-bore-lto-headers linux-firmware amd-ucode iwd wireless-regdb btrfs-progs fuse pipewire pipewire-pulse wireplumber pipewire-alsa mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau amdgpu upower sof-firmware sudo ufw snapper util-linux zram-generator plymouth xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa
+pacstrap /mnt base grub efibootmgr linux-cachyos-bore-lto linux-cachyos-bore-lto-headers linux-firmware amd-ucode networkmanager wireless-regdb btrfs-progs fuse power-profiles-daemon pipewire pipewire-pulse wireplumber pipewire-alsa pipewire-jack bluez mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau upower sof-firmware sudo ufw snapper util-linux xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa xorg-server xf86-video-amdgpu fontconfig noto-fonts ttf-ubuntu-font-family ttf-liberation mdadm
 ```
 
-###### Instalación minimal no dev Base
+###### discos raid
 ```bash
-pacstrap /mnt base grub efibootmgr linux-cachyos-bore-lto linux-cachyos-bore-lto-headers linux-firmware amd-ucode iwd wireless-regdb btrfs-progs f2fs-tools fuse pipewire pipewire-pulse wireplumber pipewire-alsa mesa vulkan-radeon libva-mesa-driver mesa-vdpau lib32-mesa lib32-vulkan-radeon lib32-libva-mesa-driver lib32-mesa-vdpau xf86-video-amdgpu amdgpu amdgpu_top upower sof-firmware sudo ufw thermald Snapper util-linux zram-generator plymouth xorg xorg-server xorg-xwayland wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa nvme-cli mdadm
+mdadm
+```
+
+###### discos zram
+```bash
+zram-generator
 ```
 
 ###### Gnome
@@ -96,7 +98,10 @@ export PCNAME=""
 ```
 
 ```bash
-echo $PCNAME > /etc/hostname;
+echo $PCNAME > /etc/hostname
+```
+
+```bash
 cat >> /etc/hosts <<EOF
 127.0.0.1 localhost $PCNAME
 ::1 localhost $PCNAME
@@ -186,6 +191,8 @@ export USERR=""
 
 ```bash
 useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner,polkitd -s /bin/bash $USERR
+```
+```bash
 passwd $USERR
 ```
 
@@ -194,7 +201,10 @@ EDITOR=nvim visudo
 ```
 
 ```bash
-systemctl enable systemd-resolved.service;systemctl enable iwd.service;systemctl enable bluetooth.service;systemctl enable ufw.service;systemctl enable thermald.service;systemctl enable upower.service;sudo systemctl enable fstrim.timer;systemctl enable systemd-zram-setup@zram0.service;
+systemctl enable systemd-resolved.service;systemctl enable NetworkManager;systemctl enable bluetooth.service;systemctl enable ufw.service;systemctl enable upower.service;sudo systemctl enable fstrim.timer;sudo systemctl enable  power-profiles-daemon.service
+
+systemctl enable systemd-zram-setup@zram0.service;
+systemctl enable thermald.service
 ```
 gnome
 ```bash
@@ -214,18 +224,63 @@ quedando algo asi GRUB_CMDLINE_LINUX_DEFAULT=""
 nvim /etc/default/grub
 ```
 ```bash
-quiet splash loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.ppfeaturemask=0xffffffff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.powerplay=1
+quiet loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.ppfeaturemask=0xffffffff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.powerplay=1
 ```
 
 ```bash
 mkinitcpio -p linux-cachyos-bore-lto;grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
+
+sudo pacman -S 
+sudo ln -s /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d/
+sudo ln -s /usr/share/fontconfig/conf.avail/10-hinting-full.conf /etc/fonts/conf.d/
+sudo rm /etc/fonts/conf.d/10-hinting-slight.conf 
+
+
 ```bash
-ufw default deny incoming;ufw enable
-```
-```bash
-plymouth-set-default-theme -R bgrt
+cat > /etc/fonts/local.conf <<EOF 
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  
+  <!-- Activar subpixel rendering -->
+  <match target="font">
+    <edit name="rgba" mode="assign">
+      <const>rgb</const>
+    </edit>
+  </match>
+
+  <!-- Activar antialiasing -->
+  <match target="font">
+    <edit name="antialias" mode="assign">
+      <bool>true</bool>
+    </edit>
+  </match>
+
+  <!-- Aplicar hinting de alta calidad -->
+  <match target="font">
+    <edit name="hintstyle" mode="assign">
+      <const>hintfull</const>
+    </edit>
+  </match>
+
+  <!-- Activar autohint para una mejor definición -->
+  <match target="font">
+    <edit name="autohint" mode="assign">
+      <bool>true</bool>
+    </edit>
+  </match>
+
+  <!-- Desactivar mapas de bits embebidos -->
+  <match target="font">
+    <edit name="embeddedbitmap" mode="assign">
+      <bool>false</bool>
+    </edit>
+  </match>
+
+</fontconfig>
+EOF
 ```
 
 ```bash
@@ -238,12 +293,18 @@ umount -R /mnt
 reboot
 ```
 
-steam
+
 ```bash
-RADV_PERFTEST=aco %command%
-RADV_PERFTEST=aco VK_INSTANCE_LAYERS=VK_LAYER_MESA_overlay %command%
-```
-```bash
-sudo timeshift --create --tags D --comments "Snapshot inicial"
+ufw default deny incoming;ufw enable
+sudo umount /.snapshots
+sudo rm -Rf /.snapshots
+sudo snapper -c root create-config /
+reboot
+sudo snapper -c root list
+sudo snapper -c root create --description "base"
+
+sudo snapper -c root undochange 1..0
+sudo snapper delete 1
+
 ```
 
