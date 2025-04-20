@@ -232,11 +232,11 @@ mkinitcpio -p linux-cachyos-bore-lto;grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 
-sudo pacman -S 
+```bash
 sudo ln -s /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d/
 sudo ln -s /usr/share/fontconfig/conf.avail/10-hinting-full.conf /etc/fonts/conf.d/
 sudo rm /etc/fonts/conf.d/10-hinting-slight.conf 
-
+```
 
 ```bash
 cat > /etc/fonts/local.conf <<EOF 
