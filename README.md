@@ -121,7 +121,7 @@ sudo rm /etc/resolv.conf;echo -e 'nameserver 1.1.1.1\nnameserver 8.8.8.8' | sudo
 ```
 
 ```bash
-cat > /etc/fonts/local.conf <<EOF 
+cat > /etc/iwd/main.conf <<EOF 
 [General]
 EnableNetworkConfiguration=true
 EOF
