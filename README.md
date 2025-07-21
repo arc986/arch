@@ -42,7 +42,7 @@ mkdir -p /mnt/{home,boot/efi,.snapshots}
 mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@home /dev/nvme0n1p2 /mnt/home
 ```
 ```bash
-mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@snapshots /dev/nvme0n1p2 /mnt/.snapshots
+mount -o noatime,compress=zstd:7,space_cache=v2,ssd,subvol=@snapshots /dev/nvme0n1p2 /mnt/.snapshots
 ```
 ```bash
 mount /dev/nvme0n1p1 /mnt/boot/efi
