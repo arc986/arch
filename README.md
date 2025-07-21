@@ -1,114 +1,249 @@
-# WIFI
+| Paso | Comando / Acción |
+|------|------------------|
+| 1. Verificar interfaces de red disponibles | `ip link` |
+| 2. Habilitar interfaz Wi-Fi | `ip link set <INTERFACE> up` (Sustituir `<INTERFACE>` por el nombre de la interfaz, por ejemplo, `wlan0` o `wlp3s0`) |
+| 3. Buscar redes disponibles | `iwctl station <INTERFACE> scan` (Reemplazar `<INTERFACE>` por el nombre de la interfaz, por ejemplo, `wlan0`) |
+| 4. Ver redes disponibles | `iwctl station <INTERFACE> get-networks` |
+| 5. Conectar a una red Wi-Fi | `iwctl station <INTERFACE> connect <SSID>` (Reemplazar `<SSID>` por el nombre de tu red Wi-Fi) |
+| 6. Verificar la conexión | `ping -c 3 google.com` |
+| 7. Si se requiere contraseña | Durante el paso 5, se te pedirá que ingreses la contraseña de la red Wi-Fi. |
 
-iwctl
+# Particiones propuestas
+|Disposit.|Tamaño|Tipo|
+|---|---|---|
+|/dev/nvme0n1p1|25M|Sistema EFI|
+|/dev/nvme0n1p2|MAX|Sistema de ficheros de Linux|
 
-Status [device-name] connect [WIFI-name]
-
-Status [device-name] connect-hidden [WIFI-name]
-
-
-
-# disco
-
-mount -o defaults,noatime /dev/sda4 /mnt
-
-
-
-```
+# Formatear particiones creadas
+```bash
 mkfs.vfat /dev/nvme0n1p1
-mkfs.ext2 /dev/nvme0n1p2
-mkfs.f2fs /dev/nvme0n1p3
+```
+```bash
+mkfs.btrfs -f -d single -m single -L "root" /dev/nvme0n1p2
 ```
 
+# BTRFS Particiones y volumenes
+```bash
+mount /dev/nvme0n1p2 /mnt
+```
+```bash
+btrfs subvolume create /mnt/@;btrfs subvolume create /mnt/@home;btrfs subvolume create /mnt/@snapshots
+```
+```bash
+umount /mnt
+```
+```bash
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@ /dev/nvme0n1p2 /mnt
+```
+```bash
+mkdir -p /mnt/{home,boot/efi,.snapshots}
+```
+```bash
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@home /dev/nvme0n1p2 /mnt/home
+```
+```bash
+mount -o noatime,compress=zstd:3,space_cache=v2,ssd,subvol=@snapshots /dev/nvme0n1p2 /mnt/.snapshots
+```
+```bash
+mount /dev/nvme0n1p1 /mnt/boot/efi
+```
 
-
-```
-mount -t f2fs /dev/nvme0n1p3 /mnt
-```
-
-```
-mkdir /mnt/boot;mount /dev/nvme0n1p2 /mnt/boot
+# Instalación minimal no dev Base clean 
+```bash
+pacstrap /mnt base grub efibootmgr linux-zen linux-firmware amd-ucode iwd btrfs-progs power-profiles-daemon pipewire pipewire-pulse wireplumber pipewire-alsa pipewire-jack bluez mesa vulkan-radeon libva-mesa-driver mesa-vdpau upower opendoas ufw snapper wayland terminus-font xdg-user-dirs htop neovim hunspell-es_pa fontconfig
 ```
 
-```
-mkdir /mnt/boot/efi;mount /dev/nvme0n1p1 /mnt/boot/efi
-```
-
-
-
-```
-pacstrap /mnt base base-devel grub ntfs-3g gvfs efibootmgr htop openssh linux-zen linux-zen-headers linux-firmware vim intel-ucode networkmanager xfsprogs git fuse nvidia nvidia-utils nvidia-settings cuda nvidia-dkms lib32-nvidia-utils xorg-server xorg-xinit vulkan-icd-loader lib32-vulkan-icd-loader pulseaudio pulseaudio-alsa alsa-utils alsa-plugins alsa-lib ttf-liberation ttf-bitstream-vera ttf-dejavu ttf-droid ttf-freefont ttf-font-awesome ttf-ubuntu-font-family hunspell-es_pa terminus-font xorg-xset udev
-```
-
-```
-pacstrap /mnt base base-devel grub f2fs-tools fuse ntfs-3g gvfs efibootmgr htop openssh linux-lts linux-lts-headers linux-firmware vim amd-ucode networkmanager xfsprogs git xf86-video-amdgpu vulkan-radeon lib32-mesa lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau xorg-server xorg-xinit pulseaudio pulseaudio-alsa alsa-utils alsa-plugins alsa-lib ttf-liberation ttf-bitstream-vera ttf-dejavu ttf-droid ttf-freefont ttf-font-awesome ttf-ubuntu-font-family hunspell-es_pa hunspell-es_any terminus-font xorg-xset bluez udev fwupd bolt xf86-input-evdev xf86-input-synaptics
-```
-
-### Generar la tabla de particiones
-
-```
+```bash
 genfstab -pU /mnt >> /mnt/etc/fstab
 ```
 
-### Entramos del sistema virtual al real como root
-
-```
+```bash
 arch-chroot /mnt
-
 ```
 
-
-Errors occured, no packages were upgraded. 
-⇒ ERROR: Failed to install packages to new root.
-```
-pacman-key --refresh-keys
+```bash
+export PCNAME=""
 ```
 
+```bash
+echo $PCNAME > /etc/hostname
 ```
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
-yay -S wd719x-firmware aic94xx-firmware upd72020x-fw 
-systemctl enable laptop-mode-tools PC
+
+```bash
+cat >> /etc/hosts <<EOF
+127.0.0.1 localhost $PCNAME
+::1 localhost $PCNAME
+EOF
+```
+
+```bash
+ln -sf /usr/share/zoneinfo/America/Panama /etc/localtime
+```
+
+```bash
+echo es_PA.UTF-8 UTF-8 >/etc/locale.gen;echo LANG=es_PA.UTF-8 >/etc/locale.conf;echo LANG=es_PA.UTF-8 >>/etc/environment;echo LC_TIME=C>>/etc/environment;echo LC_COLLATE=C >>/etc/environment;locale-gen
+```
+
+```bash
+echo KEYMAP=la-latin1 > /etc/vconsole.conf;echo FONT=ter-132n >> /etc/vconsole.conf
+```
+
+```bash
+grub-install --efi-directory=/boot/efi --bootloader-id='Arch Linux' --target=x86_64-efi
+```
+
+```bash
+sed -i 's/MODULES=()/MODULES=(btrfs amdgpu)/' /etc/mkinitcpio.conf
+```
+
+```bash
+passwd
+```
+
+```bash
+export USERR=""
+```
+
+```bash
+useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner,polkitd -s /bin/bash $USERR
+```
+
+```bash
+passwd $USERR
+```
+
+```bash
+echo 'permit :wheel' > /etc/doas.conf;chmod 0400 /etc/doas.conf
+```
+
+```bash
+sudo rm /etc/resolv.conf;echo -e 'nameserver 1.1.1.1\nnameserver 8.8.8.8' | sudo tee /etc/resolv.conf > /dev/null
+```
+
+```bash
+cat > /etc/fonts/local.conf <<EOF 
+[General]
+EnableNetworkConfiguration=true
+EOF
+```
+
+```bash
+systemctl enable iwd
+```
+```bash
 systemctl enable bluetooth.service
-systemctl enable systemd-resolved.service
-systemctl enable NetworkManager
-systemctl enable fstrim.timer
-systemctl enable fstrim.service
-systemctl mask systemd-rfkill.service
-systemctl mask systemd-rfkill.socket
+```
+```bash
+systemctl enable ufw.service
+```
+```bash
+systemctl enable upower.service
+```
+```bash
+sudo systemctl enable fstrim.timer
+```
+```bash
+sudo systemctl enable  power-profiles-daemon.service
+```
+
+```bash
+echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub
+```
+
+```bash
+mkinitcpio -p linux-zen;
+```
+```bash
+grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 
-
-tlp
-
-# red
-
-[networkmanager](https://www.archlinux.org/packages/?name=networkmanager)
-
-
-
-# kde
-
-pacman -S plasma kde-system-meta kde-accessibility-meta kde-graphics-meta konsole kate kdeconnect kdenetwork-filesharing krdc telepathy-kde-meta kdeconnect zeroconf-ioslave xdg-user-dirs firefox firefox-i18n-es-mx 
-
-
-
-pacman -S gnome-shell nautilus gnome-terminal gnome-control-center gdm firefox firefox-i18n-es-mx cups system-config-printer gnome-user-share gnome-remote-desktop rygel ghostscript libraw libwmf ocl-icd djvulibre gnome-firmware fwupd gnome-music gnome-mplayer gnome-power-manager gnome-books gnome-calculator gnome-calendar gnome-color-manager gnome-disk-utility gnome-documents gnome-menus gnome-passwordsafe gnome-phone-manager gnome-photos gnome-podcasts gnome-system-monitor gnome-screenshot xdg-user-dirs-gtk
-
-
-
+```bash
+sudo ln -s /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d/
 ```
-systemctl enable laptop-mode.service
-systemctl enable gdm.service
+```bash
+sudo ln -s /usr/share/fontconfig/conf.avail/10-hinting-full.conf /etc/fonts/conf.d/
+```
+```bash
+sudo rm /etc/fonts/conf.d/10-hinting-slight.conf 
 ```
 
+```bash
+cat > /etc/fonts/local.conf <<EOF 
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  
+  <!-- Activar subpixel rendering -->
+  <match target="font">
+    <edit name="rgba" mode="assign">
+      <const>rgb</const>
+    </edit>
+  </match>
 
+  <!-- Activar antialiasing -->
+  <match target="font">
+    <edit name="antialias" mode="assign">
+      <bool>true</bool>
+    </edit>
+  </match>
 
-title   Arch Linux (CachyOS Bore LTO)
-linux   /vmlinuz-linux-cachyos-bore-lto
-initrd  /amd-ucode.img
-initrd  /initramfs-linux-cachyos-bore-lto.img
-options root=UUID=TU_UUID_DE_LA_PARTICION_RAIZ rw rootflags=subvol=@ quiet loglevel=3 amdgpu.dpm=1 amdgpu.dc=1 amdgpu.ppfeaturemask=0xffffffff amdgpu.noretry=0 amdgpu.vm_fragment_size=9 amdgpu.powerplay=1
+  <!-- Aplicar hinting de alta calidad -->
+  <match target="font">
+    <edit name="hintstyle" mode="assign">
+      <const>hintfull</const>
+    </edit>
+  </match>
 
+  <!-- Activar autohint para una mejor definición -->
+  <match target="font">
+    <edit name="autohint" mode="assign">
+      <bool>true</bool>
+    </edit>
+  </match>
+
+  <!-- Desactivar mapas de bits embebidos -->
+  <match target="font">
+    <edit name="embeddedbitmap" mode="assign">
+      <bool>false</bool>
+    </edit>
+  </match>
+
+</fontconfig>
+EOF
+```
+
+```bash
+exit
+```
+```bash
+umount -R /mnt
+```
+```bash
+reboot
+```
+
+```bash
+ufw default deny incoming;ufw enable
+```
+```bash
+sudo umount /.snapshots
+```
+```bash
+sudo rm -Rf /.snapshots
+```
+```bash
+sudo snapper -c root create-config /
+```
+```bash
+reboot
+```
+
+# Manejo de control de verciones de BTRFS
+```bash
+sudo snapper -c root list
+sudo snapper -c root create --description "base"
+
+sudo snapper -c root undochange 1..0
+sudo snapper delete 1
+```
