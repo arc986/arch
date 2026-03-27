@@ -367,11 +367,12 @@ sudo snapper -c root undochange 1..0
 sudo snapper delete 1
 ```
 
+
 ### GNOME (Wayland puro)
 
 ```bash
 # Motor grafico + control + archivos + productividad + flatpak
-pacman -S gdm gnome-shell mutter gnome-control-center gnome-backgrounds xdg-desktop-portal-gnome gnome-bluetooth-3.0 nautilus gnome-console baobab gnome-logs gnome-system-monitor gnome-font-viewer gnome-text-editor gnome-calendar papers loupe snapshot showtime decibels gnome-calculator gnome-software flatpak
+pacman -S gdm gnome-shell mutter gnome-control-center gnome-backgrounds xdg-desktop-portal-gnome gnome-bluetooth-3.0 nautilus gnome-console baobab gnome-logs gnome-system-monitor gnome-font-viewer gnome-text-editor gnome-calendar papers loupe snapshot showtime decibels gnome-calculator gnome-software flatpak firefox firefox-i18n-es-pa
 
 # Habilitar la interfaz
 systemctl enable gdm.service
@@ -409,4 +410,89 @@ cat > /etc/containers/storage.conf <<EOF
 driver = "btrfs"
 graphroot = "/var/lib/containers"
 EOF
+```
+### Firefox
+
+```bash
+# --- Configuración de Firefox: Lógica de Hierro y Privacidad ---
+
+# 1. Localizar la carpeta del perfil por defecto
+FF_PROFILE=$(ls -d ~/.mozilla/firefox/*.default-release | head -n 1)
+
+# 2. Inyectar el archivo user.js de alto rendimiento y seguridad
+cat > "$FF_PROFILE/user.js" <<EOF
+// --- PRIVACIDAD Y SEGURIDAD ---
+user_pref("privacy.trackingprotection.enabled", true);       // Bloqueo de rastreo estricto
+user_pref("privacy.trackingprotection.socialtracking.enabled", true);
+user_pref("privacy.partition.network_state.ocsp_cache", true); // Evita fugas de caché
+user_pref("dom.battery.enabled", false);                     // No rastrear nivel de batería
+user_pref("browser.send_pings", false);                      // Bloqueo de balizas de clic
+user_pref("network.IDN_show_punycode", true);                // Evita ataques de homógrafo (Phishing)
+
+// --- ELIMINAR TELEMETRÍA Y RUIDO ---
+user_pref("datareporting.healthreport.uploadEnabled", false);
+user_pref("datareporting.policy.dataSubmissionEnabled", false);
+user_pref("toolkit.telemetry.enabled", false);
+user_pref("app.shield.optoutstudies.enabled", false);
+user_pref("browser.discovery.enabled", false);
+user_pref("extensions.pocket.enabled", false);               // Adiós Pocket (bloatware)
+user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);
+user_pref("browser.newtabpage.activity-stream.showSponsored", false);
+
+// --- RENDIMIENTO Y OPTIMIZACIÓN (HARDWARE AMD) ---
+user_pref("media.ffmpeg.vaapi.enabled", true);               // Decodificación video por hardware
+user_pref("image.mem.decode_on_draw", true);                 // Ahorro de memoria en renderizado
+
+// --- COMPORTAMIENTO LIMPIO ---
+user_pref("browser.shell.checkDefaultBrowser", false);       // No molestar con "Navegador predeterminado"
+user_pref("browser.sessionstore.privacy_level", 2);          // No enviar cookies en restauración
+user_pref("network.prefetch-next", false);                   // No conectar a enlaces que no has tocado
+user_pref("pdfjs.disabled", false);                          // Mantener visor PDF interno (más seguro que externo)
+EOF
+
+echo "Firefox endurecido con éxito en: $FF_PROFILE"
+```
+
+### Referencia rapida
+
+#### Distrobox
+```bash
+# listar
+distrobox list
+
+# crear
+distrobox create --name dev-arch --image archlinux:latest --home ~/Cajas/arch-home
+distrobox create --name dev-alpine --image alpine:latest --home ~/Cajas/alpine-home
+
+# entrar
+distrobox enter dev-arch
+
+# salir: exit o Ctrl + D
+
+# detener
+distrobox stop dev-go
+
+# eliminar
+distrobox rm dev-go
+
+# ejecutar comando sin entrar
+distrobox enter dev-go -- go version
+```
+
+#### Snapper
+```bash
+# listar snapshots
+sudo snapper -c root list
+
+# crear snapshot manual
+sudo snapper -c root create --description "antes de actualizar"
+
+# comparar cambios entre dos snapshots
+sudo snapper -c root status 1..2
+
+# revertir cambios entre dos snapshots
+sudo snapper -c root undochange 1..2
+
+# eliminar un snapshot
+sudo snapper delete 2
 ```
