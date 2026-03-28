@@ -476,6 +476,8 @@ SCRIPT
 chmod +x /home/$USERNAME/kde-setup.sh
 chown $USERNAME:$USERNAME /home/$USERNAME/kde-setup.sh
 
+sudo /usr/lib/plasma-dbus-run-session-if-needed sddmthemeinstaller --apply-default
+
 ```
 
 
