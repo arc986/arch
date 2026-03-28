@@ -70,7 +70,7 @@ chattr +C /mnt/var/lib/libvirt
 
 ## Instalacion base
 ```bash
-pacstrap -K /mnt base linux-zen amd-ucode linux-firmware-whence linux-firmware-amdgpu linux-firmware-intel btrfs-progs pipewire wireplumber bluez mesa vulkan-radeon libva-mesa-driver snapper wayland neovim zram-generator hunspell-es_pa fontconfig power-profiles-daemon upower terminus-font sudo sof-firmware nftables networkmanager iwd
+pacstrap -K /mnt base linux-zen amd-ucode linux-firmware-whence linux-firmware-amdgpu linux-firmware-intel btrfs-progs pipewire wireplumber bluez mesa vulkan-radeon libva-mesa-driver snapper wayland neovim zram-generator hunspell-es_pa fontconfig power-profiles-daemon upower terminus-font sudo sof-firmware nftables networkmanager iwd inter-font ttf-jetbrains-mono noto-fonts noto-fonts-cjk noto-fonts-emoji
 ```
 
 ## Generar fstab
@@ -86,8 +86,8 @@ arch-chroot /mnt
 
 ### Variables
 ```bash
-export HOSTNAME="arch-dell"
-export USERNAME="por definir"
+export HOSTNAME="KL86"
+export USERNAME="mihatra"
 export LOCALE="es_PA.UTF-8"
 export TIMEZONE="America/Panama"
 export KEYMAPS="la-latin1"
@@ -106,7 +106,7 @@ EOF
 ```
 
 ```bash
-ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime;
 hwclock --systohc
 ```
 
@@ -125,17 +125,17 @@ passwd
 ```
 
 ```bash
-useradd -m -g users -G wheel -s /bin/bash $USERNAME
+useradd -m -g users -G wheel -s /bin/bash $USERNAME;
 passwd $USERNAME
 ```
 
 ```bash
-echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/10-wheel
+echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/10-wheel;
 chmod 0440 /etc/sudoers.d/10-wheel
 ```
 
 ```bash
-echo "$USERNAME:100000:65536" >> /etc/subuid
+echo "$USERNAME:100000:65536" >> /etc/subuid;
 echo "$USERNAME:100000:65536" >> /etc/subgid
 ```
 
@@ -171,9 +171,8 @@ EOF
 ```bash
 sed -i 's/MODULES=()/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
 
-nvim /etc/mkinitcpio.conf
-HOOKS=(systemd autodetect microcode modconf kms keyboard sd-vconsole block filesystems)
-COMPRESSION="zstd"
+sed -i 's/^HOOKS=.*/HOOKS=(systemd autodetect microcode modconf kms keyboard sd-vconsole block filesystems)/' /etc/mkinitcpio.conf
+sed -i 's/^#\?#COMPRESSION="zstd"/COMPRESSION="zstd"/' /etc/mkinitcpio.conf
 
 mkinitcpio -P
 ```
@@ -181,38 +180,36 @@ mkinitcpio -P
 ### Ajustes del sistema
 
 ```bash
-nvim /etc/systemd/logind.conf
-NAutoVTs=2
+sed -i 's/^#\?NAutoVTs=6/NAutoVTs=2/' /etc/systemd/logind.conf
+
 ```
 
 ```bash
-nvim /etc/systemd/zram-generator.conf
+cat > /etc/systemd/zram-generator.conf <<EOF
 [zram0]
 zram-size = min(ram / 2, 8192)
 compression-algorithm = zstd
+EOF
 ```
 
 ```bash
-nvim /etc/sysctl.d/99-rendimiento.conf
+cat > /etc/sysctl.d/99-rendimiento.conf <<EOF
 vm.swappiness = 10
 vm.vfs_cache_pressure = 50
 vm.dirty_ratio = 10
 vm.dirty_background_ratio = 5
+EOF
 ```
 
 ```bash
-nvim /etc/systemd/journald.conf
-[Journal]
-Storage=volatile
-RuntimeMaxUse=15M
+sed -i 's/^#\?Storage=persistent/Storage=volatile/' /etc/systemd/journald.conf
+sed -i 's/^#\?RuntimeMaxUse=.*/RuntimeMaxUse=15M/' /etc/systemd/journald.conf
 ```
 
 ```bash
 # opcional
-nvim /etc/systemd/coredump.conf
-[Coredump]
-Storage=none
-ProcessSizeMax=0
+sed -i 's/^#\?Storage=external/Storage=none/' /etc/systemd/coredump.conf
+sed -i 's/^#\?ProcessSizeMax=.*/ProcessSizeMax=0/' /etc/systemd/coredump.conf
 ```
 
 ### Red y firewall
@@ -259,8 +256,8 @@ EOF
 
 ```bash
 # Eliminar el hinting completo si lo activaste
-rm -f /etc/fonts/conf.d/10-hinting-full.conf
-rm -f /etc/fonts/conf.d/10-hinting-slight.conf
+rm -f /etc/fonts/conf.d/10-hinting-full.conf;
+rm -f /etc/fonts/conf.d/10-hinting-slight.conf;
 rm -f /etc/fonts/conf.d/11-lcdfilter-default.conf
 ```
 
@@ -305,6 +302,29 @@ cat > /etc/fonts/local.conf <<EOF
       <bool>false</bool>
     </edit>
   </match>
+
+  <alias>
+    <family>sans-serif</family>
+    <prefer>
+      <family>Inter</family>
+      <family>Noto Sans</family>
+    </prefer>
+  </alias>
+
+  <alias>
+    <family>system-ui</family>
+    <prefer>
+      <family>Inter</family>
+    </prefer>
+  </alias>
+
+  <alias>
+    <family>monospace</family>
+    <prefer>
+      <family>JetBrains Mono</family>
+      <family>Noto Sans Mono</family>
+    </prefer>
+  </alias>
 
 </fontconfig>
 EOF
@@ -370,11 +390,11 @@ sudo snapper delete 1
 
 ```bash
 # Instalacion del nucleo absoluto (cero bloatware, cero meta-paquetes)
-pacman -S sddm plasma-desktop kwin qt6-wayland systemsettings plasma-workspace-wallpapers xdg-desktop-portal-kde bluedevil dolphin konsole filelight ksystemlog plasma-systemmonitor kfontview kwrite merkuro okular gwenview kamoso haruna elisa kcalc discover flatpak firefox firefox-i18n-es-pa plasma-nm plasma-pa
+sudo pacman -S sddm plasma-desktop kwin qt6-wayland systemsettings plasma-workspace-wallpapers xdg-desktop-portal-kde bluedevil dolphin konsole filelight ksystemlog plasma-systemmonitor kwrite merkuro okular gwenview kamoso haruna elisa kcalc discover flatpak firefox firefox-i18n-es-mx plasma-nm plasma-pa
 
 # Configurar SDDM para ejecutarse nativamente bajo Wayland (KWin) y descartar X11 en el login
-mkdir -p /etc/sddm.conf.d
-cat > /etc/sddm.conf.d/10-wayland.conf <<EOF
+sudo mkdir -p /etc/sddm.conf.d
+sudo cat > /etc/sddm.conf.d/10-wayland.conf <<EOF
 [General]
 DisplayServer=wayland
 GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
@@ -384,28 +404,30 @@ CompositorCommand=kwin_wayland --drm --no-lockscreen --no-global-shortcuts --loc
 EOF
 
 # Castración de indexadores (Baloo) a nivel de sistema
-mkdir -p /etc/xdg
+sudo mkdir -p /etc/xdg
 echo -e "[Basic Settings]\nIndexing-Enabled=false" > /etc/xdg/baloofilerc
 
 # Habilitar el gestor de sesiones
-systemctl enable sddm.service
+sudo systemctl enable sddm.service
 
-# Definir la ruta de configuración del usuario
-CONF_DIR="/home/$USERNAME/.config"
+# Crear script de configuración de usuario (ejecutar manualmente al iniciar sesión por primera vez)
+export USERNAME=$(grep '/home' /etc/passwd | grep '/bin/bash' | head -1 | cut -d: -f1)
+cat > /home/$USERNAME/kde-setup.sh <<'SCRIPT'
+#!/bin/bash
+CONF_DIR="$HOME/.config"
 mkdir -p "$CONF_DIR"
 
-# 1. Castrar Discover (Evitar que busque actualizaciones gráficas en segundo plano y consuma RAM)
-systemctl --user mask plasma-discover-update.service
-systemctl --user mask plasma-discover-update.timer
+# 1. Castrar Discover (Evitar que busque actualizaciones en segundo plano y consuma RAM)
+mkdir -p "$CONF_DIR/systemd/user"
+ln -s /dev/null "$CONF_DIR/systemd/user/plasma-discover-update.service"
+ln -s /dev/null "$CONF_DIR/systemd/user/plasma-discover-update.timer"
 
-# 2. Deshabilitar DrKonqi (El recolector de reportes de fallos de KDE). 
-# En un entorno de misión crítica, los errores se analizan en el journalctl, no con GUIs pesadas.
+# 2. Deshabilitar DrKonqi (reportes de fallos de KDE)
 mkdir -p "$CONF_DIR/autostart"
 cp /etc/xdg/autostart/org.kde.drkonqi.desktop "$CONF_DIR/autostart/" 2>/dev/null || true
 echo "Hidden=true" >> "$CONF_DIR/autostart/org.kde.drkonqi.desktop"
 
-
-# 3. Kdeglobals: Apagar animaciones globales para ahorrar ciclos de GPU y forzar renderizado inmediato.
+# 3. Kdeglobals: Apagar animaciones globales y forzar renderizado inmediato
 cat >> "$CONF_DIR/kdeglobals" <<EOF
 [KDE]
 AnimationDurationFactor=0
@@ -414,13 +436,13 @@ AnimationDurationFactor=0
 AutoRestart=false
 EOF
 
-# 4. Baloo (Indexador): Lógica negativa absoluta. Destruir cualquier intento de indexación semántica.
+# 4. Baloo (Indexador): Destruir cualquier intento de indexación
 cat > "$CONF_DIR/baloofilerc" <<EOF
 [Basic Settings]
 Indexing-Enabled=false
 EOF
 
-# 5. Dolphin: Bloquear la conexión con Baloo, evitar precarga de miniaturas pesadas y no recordar pestañas (ahorro de RAM).
+# 5. Dolphin: Sin Baloo, sin miniaturas, sin pestañas recordadas
 cat > "$CONF_DIR/dolphinrc" <<EOF
 [General]
 ShowSpaceInfo=false
@@ -430,27 +452,29 @@ RememberOpenedTabs=false
 Plugins=
 EOF
 
-# 6. Elisa (Reproductor Musical): Prohibir el escaneo automático del disco duro al iniciar.
+# 6. Elisa: Prohibir escaneo automático al iniciar
 cat > "$CONF_DIR/elisarc" <<EOF
 [General]
 ScanAtStartup=false
 EOF
 
-# 7. KSystemLog: Forzarlo a leer solo el journal actual sin precargar históricos gigantescos.
+# 7. KSystemLog: Solo journal actual, sin históricos
 cat > "$CONF_DIR/ksystemlogrc" <<EOF
 [General]
 MaxLines=1000
 EOF
 
-# 8. Okular (PDF): Desactivar animaciones de desplazamiento y uso excesivo de memoria para caché.
+# 8. Okular: Bajo consumo de memoria
 cat > "$CONF_DIR/okularpartrc" <<EOF
 [Core Performance]
 MemoryLevel=Low
 EnableCompositing=false
 EOF
 
-# Asegurar que los permisos sean correctos para tu usuario
-chown -R $USERNAME:$USERNAME /home/$USERNAME/.config
+echo "Configuración de KDE aplicada. Reinicia la sesión."
+SCRIPT
+chmod +x /home/$USERNAME/kde-setup.sh
+chown $USERNAME:$USERNAME /home/$USERNAME/kde-setup.sh
 
 ```
 
